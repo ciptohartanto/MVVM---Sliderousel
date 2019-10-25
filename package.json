@@ -1,0 +1,36 @@
+{
+  "name": "dev-markup-gulp4",
+  "version": "1.0.0",
+  "description": "A simple Gulp Project to get your markup project going quicker. You can write in Pug for HTML, Sass for CSS, and ES6 for JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "dev": "gulp dev"
+  },
+  "keywords": [
+    "Markup",
+    "HTML",
+    "CSS",
+    "PUG",
+    "Sass",
+    "SCSS",
+    "SVG",
+    "Gulp",
+    "Gulp4"
+  ],
+  "author": "Cipto Hartanto",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
+    "@babel/polyfill": "^7.6.0",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/register": "^7.6.2",
+    "browser-sync": "^2.26.7",
+    "del": "^5.1.0",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-pug": "^4.0.1",
+    "gulp-sass": "^4.0.2",
+    "webpack-stream": "^5.2.1"
+  }
+}
