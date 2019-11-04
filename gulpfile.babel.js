@@ -101,9 +101,9 @@ export const reload = (done) => {
 
 export const devWatch = () => {
   watch(`${dirs.src}/${sources.images}`, series(syncImages, reload))
-  watch(`${dirs.src}/${sources.scripts}`, series(syncScripts, reload))
+  watch(`${dirs.src}/${sources.scripts}`, series(syncScripts, syncMarkup, reload))
   watch(`${dirs.src}/${sources.styling}`, series(syncStylesheet, reload))
   watch(`${dirs.src}/${sources.markup}`, series(syncMarkup, reload))
 
 }
-export const dev = series(deleteDist, parallel(stylesheet, markup, copyImagesToDist, parseScript, browser_sync), devWatch)
+export const dev = series(deleteDist, parallel(syncImages, syncScripts, markup, stylesheet), browser_sync, devWatch)
