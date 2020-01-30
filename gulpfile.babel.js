@@ -22,7 +22,7 @@ const dirs = {
 }
 
 const sources = {
-  markup: 'pug/**/*.pug',
+  markup: 'pug/*.pug',
   styling: 'sass/**/*',
   images: 'images/**/*',
   scripts: 'scripts/**/*',
