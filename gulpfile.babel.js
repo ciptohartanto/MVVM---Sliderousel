@@ -23,7 +23,8 @@ const dirs = {
 
 const sources = {
   markup: 'pug/*.pug',
-  styling: 'sass/**/*',
+  markup_includes: 'pug/**/*.pug',
+  styling: 'sass/**/*.s[a|c]ss',
   images: 'images/**/*',
   scripts: 'scripts/**/*',
   compiled_images: 'images',
@@ -115,7 +116,7 @@ export const devWatch = () => {
   watch(`${dirs.src}/${sources.images}`, series(syncImages, reload))
   watch(`${dirs.src}/${sources.scripts}`, series(syncScripts, markup, reload))
   watch(`${dirs.src}/${sources.styling}`, series(syncStylesheet, markup, reload))
-  watch(`${dirs.src}/${sources.markup}`, series(syncMarkup, reload))
+  watch(`${dirs.src}/${sources.markup_includes}`, series(syncMarkup, reload))
 
 }
 
