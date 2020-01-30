@@ -1,4 +1,10 @@
-import { src, dest, parallel, series, watch } from 'gulp'
+import {
+  src,
+  dest,
+  parallel,
+  series,
+  watch
+} from 'gulp'
 
 // basic markup tasks
 import sass from 'gulp-sass'
@@ -25,7 +31,6 @@ const sources = {
   compiled_scripts: 'scripts'
 }
 
-
 /*  *** Tasks ***
 - delete dist/
 - copy image assets to dist/
@@ -34,7 +39,6 @@ const sources = {
 - watch for changes on images/, sass/, and pug/
  - Kick off Browsersync
 */
-
 
 export const deleteDist = (done) => {
   del.sync([dirs.dist])
@@ -46,8 +50,14 @@ export const copyImagesToDist = (done) => {
 }
 
 export const parseScript = (done) => {
-  src('src/scripts/app.js')
-    .pipe(webpackStream({ output: { filename: 'app.js' } }))
+  src('src/scripts/app.js', {
+      allowEmpty: true
+    })
+    .pipe(webpackStream({
+      output: {
+        filename: 'app.js'
+      }
+    }))
     .pipe(dest('dist/scripts'))
   done()
 }
@@ -70,13 +80,15 @@ export const syncStylesheet = (done) => {
   done()
 }
 export const syncMarkup = (done) => {
-  del.sync([`${dirs.dist}`])
+  del.sync([`${dirs.dist}/*.html`])
   markup(done)
   parseScript(done)
   done()
 }
 export const stylesheet = (done) => {
-  src(`${dirs.src}/${sources.styling}`).pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError)).pipe(autoprefixer()).pipe(dest(`${dirs.dist}/${sources.compiled_css}`))
+  src(`${dirs.src}/${sources.styling}`).pipe(sass({
+    outputStyle: 'compressed'
+  }).on('error', sass.logError)).pipe(autoprefixer()).pipe(dest(`${dirs.dist}/${sources.compiled_css}`))
   done()
 }
 
@@ -101,9 +113,11 @@ export const reload = (done) => {
 
 export const devWatch = () => {
   watch(`${dirs.src}/${sources.images}`, series(syncImages, reload))
-  watch(`${dirs.src}/${sources.scripts}`, series(syncScripts, syncMarkup, reload))
-  watch(`${dirs.src}/${sources.styling}`, series(syncStylesheet, reload))
+  watch(`${dirs.src}/${sources.scripts}`, series(syncScripts, markup, reload))
+  watch(`${dirs.src}/${sources.styling}`, series(syncStylesheet, markup, reload))
   watch(`${dirs.src}/${sources.markup}`, series(syncMarkup, reload))
 
 }
-export const dev = series(deleteDist, parallel(syncImages, syncScripts, markup, stylesheet), browser_sync, devWatch)
+
+// export const markupDefaultTasks = [syncStylesheet, syncMarkup, syncImages, syncScripts]
+export const dev = series(deleteDist, parallel(stylesheet, markup, copyImagesToDist, parseScript, browser_sync), devWatch)
