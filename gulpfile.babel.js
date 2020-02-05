@@ -18,11 +18,10 @@ import sprite from 'gulp.spritesmith'
 import webpackStream from 'webpack-stream'
 
 // filesystem to create Index
-import fs, { exists } from 'fs'
+import fs from 'fs'
 import path from 'path'
 import glob from 'glob'
 import packageJSON from './package.json'
-import { create } from 'domain'
 
 const dirs = {
   src: 'src',
@@ -43,15 +42,7 @@ const sources = {
   pug_index: 'pug-index'
 }
 
-/*  *** Tasks ***
-- delete dist/
-- copy image assets to dist/
-- Convert either SCSS or Sass to CSS
-- Convert .pug to .html
-- watch for changes on images/, sass/, and pug/
- - Kick off Browsersync
-*/
-
+// a task to create index.html
 export const createIndex = (done) => {
   let fileList = ''
   glob('src/pug/*.pug', (err, files) => {
@@ -126,15 +117,19 @@ export const createIndex = (done) => {
   done() 
 }
 
-export const removeGenFiles = (done) => {
-  del.sync([dirs.dist, `${dirs.src}/${sources.pug_index}`])
+// a task to remove dist/
+export const removeDist = (done) => {
+  del.sync(dirs.dist)
   done()
 }
+
+// a task to create a duplicate of src/images/
 export const copyImagesToDist = (done) => {
   src(`${dirs.src}/${sources.images}`).pipe(dest(`${dirs.dist}/${sources.compiled_images}`))
   done()
 }
 
+// a task to pasre ES6
 export const parseScript = (done) => {
   src('src/scripts/app.js', {
       allowEmpty: true
@@ -148,23 +143,29 @@ export const parseScript = (done) => {
   done()
 }
 
+// a task to delete only dist/images and make a duplicate of src/images
 export const syncImages = (done) => {
   del.sync([`${dirs.dist}/${sources.images}`])
   src(`${dirs.src}/${sources.images}`).pipe(dest(`${dirs.dist}/${sources.compiled_images}`))
   done()
 }
 
+// a task to delete only dist/scripts and run parseScript task
 export const syncScripts = (done) => {
   del.sync([`${dirs.dist}/${sources.scripts}`])
   parseScript(done)
   done()
 }
 
+// a task to delete only dist/css and run stylesheet task
 export const syncStylesheet = (done) => {
   del.sync([`${dirs.dist}/${sources.compiled_css}`])
   stylesheet(done)
   done()
 }
+
+// a task to delete only dist/*html 
+// and run markupIndex task to create index.html, markup, and parseScript tasks
 export const syncMarkup = (done) => {
   del.sync([`${dirs.dist}/*.html`])
   markupIndex(done)
@@ -172,6 +173,8 @@ export const syncMarkup = (done) => {
   parseScript(done)
   done()
 }
+
+// a task to export Sass/SCSS to CSS
 export const stylesheet = (done) => {
   src(`${dirs.src}/${sources.styling}`).pipe(sass({
     outputStyle: 'compressed'
@@ -179,22 +182,26 @@ export const stylesheet = (done) => {
   done()
 }
 
+// a task to export pug/jade to html
 export const markup = (done) => {
   src(`${dirs.src}/${sources.markup}`).pipe(pug()).pipe(dest(`${dirs.dist}`))
   done()
 }
 
+// a task to create index.html
 export const markupIndex = (done) => {
-  
   src(`${dirs.src}/${sources.pug_index}/index.pug`, {
     allowEmpty: true
   }).pipe(pug()).pipe(dest(`${dirs.dist}`))
   done()
 }
 
+// a task to create sprites.png
 export const spriteMe = (done) => {
   const spriteData = 
-    src(`${dirs.src}/${sources.spriteImg}`).pipe(sprite({
+    src(`${dirs.src}/${sources.spriteImg}`, {
+      allowEmpty: true
+    }).pipe(sprite({
     imgName: 'sprites.png',
     cssName: '_sprites.sass',
     imgPath: '../images/sprites.png',
@@ -205,6 +212,7 @@ export const spriteMe = (done) => {
   done()
 }
 
+// a task to start browserSync
 export const browser_sync = (done) => {
   browserSync.init({
     server: {
@@ -215,19 +223,28 @@ export const browser_sync = (done) => {
   done()
 }
 
+// a task to reload browserSync
 export const reload = (done) => {
   browserSync.reload()
   done()
 }
 
+// a set of watch tasks
+// watch:
+// - changes under pug/
+// - changes under sprites/
+// - changes under scripts/
+// - changes under sass/
 export const devWatch = () => {
   watch(`${dirs.src}/${sources.markup_includes}`, series(createIndex, syncMarkup, reload))
   watch(`${dirs.src}/${sources.images}`, series(syncImages, reload))
   watch(`${dirs.src}/${sources.spriteImg}`, spriteMe)
   watch(`${dirs.src}/${sources.scripts}`, series(syncScripts, markup, reload))
   watch(`${dirs.src}/${sources.styling}`, series(syncStylesheet, markup, reload))
-
 }
 
-// export const markupDefaultTasks = [syncStylesheet, syncMarkup, syncImages, syncScripts]
-export const dev = series(removeGenFiles, createIndex, markupIndex, parallel(spriteMe, stylesheet, markup, copyImagesToDist, parseScript, browser_sync), devWatch)
+// default dev tasks
+export const dev = 
+  series(removeDist, createIndex, markupIndex, 
+    parallel(spriteMe, stylesheet, markup, copyImagesToDist, parseScript, browser_sync), 
+  devWatch)
