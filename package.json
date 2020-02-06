@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "A simple Gulp Project to get your markup project going quicker. You can write in Pug for HTML, Sass for CSS, and ES6 for JavaScript",
   "main": "index.js",
+  "bucket": "2020-buyback",
   "scripts": {
-    "dev": "gulp dev"
+    "dev": "gulp dev",
+    "dist": "gulp dist"
   },
   "keywords": [
     "Markup",

@@ -42,19 +42,94 @@ const sources = {
   pug_index: 'pug-index'
 }
 
-// a task to create index.html
-export const createIndex = (done) => {
-  let fileList = ''
+// a task to create index.html for Dev
+export const createIndexDev = (done) => {
   glob('src/pug/*.pug', (err, files) => {
+    let fileList = ''
     files.forEach(file => {
+      
       fileList +=
-          '<li><a href="' +
-          path.basename(file.substr(0, file.lastIndexOf(".")))
-           +
-          ".html" +
-          '">' +
-          path.basename(file.substr(0, file.lastIndexOf("."))) +
-          "</a></li>";
+        `
+          <li> 
+              <a href = '${path.basename(file.substr(0, file.lastIndexOf('.')))}.html'>${path.basename(file.substr(0, file.lastIndexOf('.')))}</a>
+          </li>
+        
+        `
+    });
+    
+    // this is to check if the pug-index/ exists. either way it will always create this folder
+    if(!fs.existsSync(`${dirs.dist}`)) {
+      fs.mkdirSync(`${dirs.dist}`)
+    }
+    fs.writeFileSync(
+      "dist/index.html",
+      `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title> Markup ${packageJSON.name} </title>
+    <style>
+      body{
+        padding: 100px;
+        background: #00c300;
+        font-weight: bold;
+        line-height: 2;
+        font-family: "Helvetica Neue", Helvetica, Arial;
+        font-size: 25px;
+        color: white;
+      }
+      .ul{
+        display: flex;
+        justify-content: space-between;
+      }
+      .li{
+        width: 24%;
+      }
+      a{
+        color: white;
+        letter-spacing: 1.2px;
+        text-decoration: none;
+        transition: .15s all ease-in-out;
+      }
+      a:hover{
+        color: black;
+        transition: .2s all ease-in-out;
+      }
+      h1{
+        text-align: center;
+        padding-top: 50px;
+        padding-bottom: 50px;
+      }
+    
+    </style>
+  </head>
+
+  <body>
+    <h1> Markup for ${packageJSON.name} </h1>
+    <ul>
+      ${fileList}
+    </ul>
+  </body>
+</html>      
+      `
+    );
+  });
+  done() 
+}
+
+// a task to create index.html for Verda
+export const createIndexVerda = (done) => {
+  glob('src/pug/*.pug', (err, files) => {
+    let fileList = ''
+    files.forEach(file => {
+      
+      fileList +=
+        `
+          <li> 
+              <a href = '${packageJSON.bucket}/${path.basename(file.substr(0, file.lastIndexOf('.')))}.html'>${path.basename(file.substr(0, file.lastIndexOf('.')))}</a>
+          </li>
+        
+        `
     });
     
     // this is to check if the pug-index/ exists. either way it will always create this folder
@@ -165,7 +240,7 @@ export const syncStylesheet = (done) => {
 }
 
 // a task to delete only dist/*html 
-// and run markupIndex task to create index.html, markup, and parseScript tasks
+// and run Dev task to create index.html, markup, and parseScript tasks
 export const syncMarkup = (done) => {
   del.sync([`${dirs.dist}/*.html`])
   markupIndex(done)
@@ -236,7 +311,7 @@ export const reload = (done) => {
 // - changes under scripts/
 // - changes under sass/
 export const devWatch = () => {
-  watch(`${dirs.src}/${sources.markup_includes}`, series(createIndex, syncMarkup, reload))
+  watch(`${dirs.src}/${sources.markup_includes}`, series(createIndexDev, syncMarkup, reload))
   watch(`${dirs.src}/${sources.images}`, series(syncImages, reload))
   watch(`${dirs.src}/${sources.spriteImg}`, spriteMe)
   watch(`${dirs.src}/${sources.scripts}`, series(syncScripts, markup, reload))
@@ -245,6 +320,12 @@ export const devWatch = () => {
 
 // default dev tasks
 export const dev = 
-  series(removeDist, createIndex, markupIndex, 
+  series(removeDist, createIndexDev, markupIndex, 
+    parallel(spriteMe, stylesheet, markup, copyImagesToDist, parseScript, browser_sync), 
+  devWatch)
+  
+// default dist tasks  
+export const dist = 
+  series(removeDist, createIndexVerda, markupIndex, 
     parallel(spriteMe, stylesheet, markup, copyImagesToDist, parseScript, browser_sync), 
   devWatch)
