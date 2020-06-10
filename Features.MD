@@ -19,7 +19,7 @@ Arguments:
 How to use:
 ```sass
 .example
-  +flexbox('v-center-h-center)
+  +flexbox('v-center-h-center')
 ```
 
 ## Mixin - breakpoint
