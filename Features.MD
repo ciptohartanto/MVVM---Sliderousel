@@ -2,7 +2,7 @@
 
 ## Mixin - Flexbox
 
-`+flexbox($arg)` allows adding preset flexbox into the styling. Please refer to __Arguments__ to see learn what Flexbox mixin can do.
+`+flexbox($arg)` allows adding preset flexbox into the styling. Please refer to __Arguments__ to learn what Flexbox mixin can do.
 
 Params:
 - `$arg` => string
