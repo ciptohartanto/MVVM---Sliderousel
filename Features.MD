@@ -24,7 +24,7 @@ How to use:
 
 ## Mixin - breakpoint
 
-`+breakpoint($bp)` allows including any of the mediaqueries into Sass. Please check __How to Use__ to learn how to use it and add related styling to this mixin.
+`+breakpoint($bp)` allows including one or more `@media` into Sass. Please check __How to Use__ to learn how to use it and add related styling to this mixin.
 
 Params:
 - `$bp` => string
