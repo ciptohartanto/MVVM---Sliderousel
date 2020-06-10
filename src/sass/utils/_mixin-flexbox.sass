@@ -1,0 +1,45 @@
+///  @param {string} $arg
+///    options:
+///     'v-center-h-center' => puts content to the center horizontally and vertically,
+///     'v-center-h-top'    => puts content vertically to the center and to the top horizontally,
+///     'v-center-h-left'   => puts content to the center vertically and to the left horizontally,
+///     'v-center-h-right'  => puts content to the center vertically and to the right horizontally,
+///     'v-center-h-spaceB' => puts content in the center vertically and distribute content with 
+///                            space between horizontally,
+///     'v-top-h-center'    => puts content vertically to the top and  to the center horizontally.
+///                            This doesn't put your content in the center of and top of your 
+///                            canvas, you could consider  v-center-h-center,
+///     'v-top-h-left'      => puts content to the top vertically and to the left horizontally
+
+=flexbox($arg)
+  display: flex
+  @if $arg == 'v-center-h-center'
+    justify-content: center
+    align-items: center
+    
+  @else if $arg == 'v-center-h-top'
+    justify-content: center
+    align-items: flex-start
+    
+  @else if $arg == 'v-center-h-left'
+    justify-content: flex-start
+    align-items: center
+  
+  @else if $arg == 'v-center-h-right'
+    justify-content: flex-end
+    align-items: center
+    
+  @else if $arg == 'v-center-h-spaceB'
+    justify-content: space-between
+    align-items: center
+    
+  @else if $arg == 'v-top-h-center'
+    justify-content: flex-start
+    align-items: center
+  
+  @else if $arg == 'v-top-h-left'
+    justify-content: flex-start
+    align-items: flex-start
+    
+  @else if $arg != 'v-center-h-center' or $arg != 'v-center-h-top' or $arg != 'v-center-h-left' or $arg != 'v-center-h-right' or $arg != 'v-center-h-spaceB' or $arg != 'v-top-h-center' or $arg != 'v-top-h-left' or $arg != ''
+    @warn '#{$arg} is incorrect'
