@@ -1,4 +1,4 @@
-# Sass Utils (Mixins)
+# Features - Mixins
 
 ## Mixin - Flexbox
 
@@ -22,7 +22,7 @@ How to use:
   +flexbox('v-center-h-center)
 ```
 
-## Mixin - Mediaqueries
+## Mixin - breakpoint
 
 `+breakpoint($bp)` allows including any of the mediaqueries into Sass. Please check __How to Use__ to learn how to use it and add related styling to this mixin.
 
@@ -41,9 +41,9 @@ How to use:
     margin-top: 0
 ```
 
-## Mixin - ChildMargin
+## Mixin - lastChildMargin
 
-`+childMargin($type, $direction, $amount)` shortens Sass code by automatically set the `:last-child` to have zero padding / margin.
+`+lastChildMargin($type, $direction, $amount)` shortens Sass code by automatically set the `:last-child` to have zero padding / margin.
 
 Params:
 - `$type` => string
@@ -61,5 +61,5 @@ How to use:
 .example
   &-list
   &-item
-    +childMargin(padding,bottom,10px)
+    +lastChildMargin(padding,bottom,10px)
 ```
