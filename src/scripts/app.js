@@ -21,6 +21,18 @@ document.addEventListener('DOMContentLoaded', e => {
         <h1 class="title"> Tiga </h1>
         <h2 class="subtitle"> Tiga Subtitle </h2>
       `
+      },
+      {
+        pageContent: `
+        <h1 class="title"> Empat </h1>
+        <h2 class="subtitle"> Empat Subtitle </h2>
+      `
+      },
+      {
+        pageContent: `
+        <h1 class="title"> Lima </h1>
+        <h2 class="subtitle"> Lima Subtitle </h2>
+      `
       }
     ],
     transition: TRANSITIONS.FADE_IN_FADE_OUT
