@@ -1,122 +1,132 @@
 import TRANSITIONS from './Const-Transition'
+import {CSS_CLASSES} from './Const-CssClass'
 export default class PageAnimation {
   constructor ({
-    contents = [{pageContent: 'hi' }, {pageContent: '嗨' }], 
+
     transition = TRANSITIONS.FADE_IN_FADE_OUT}
   ) {
-    this.contents = contents
+
     this.transition = transition
     this.body = document.querySelector('body')
-    this.currentPageIndex = 1
-    this.normalClass= 'page-contentItem'
-    this.inactiveCSSClass = 'page-contentItem--inactive'
-    this.activeCSSClass = 'page-contentItem--active'
-    this.nextButton = null
-    this.prevButton = null
-    this.pageWrapper = null
-    this.windowWidth = null
-    this.newWindowWidth = null
+    this.currentMainPageIndex = 1
+    this.currentSubPageIndex = []
+    this.heroClass= `${CSS_CLASSES.HERO}`
+    this.inactiveCSSClass = `${CSS_CLASSES.INACTIVE}`
+    this.activeCSSClass = `${CSS_CLASSES.ACTIVE}`
+    this.previousArrowCSSClass = `${CSS_CLASSES.LEFT_ARROW}`
+    this.nextArrowCSSClass = `${CSS_CLASSES.RIGHT_ARROW}`
+    this.topArrowCSSClass = `${CSS_CLASSES.TOP_ARROW}`
+    this.bottomArrowCSSClass = `${CSS_CLASSES.BOTTOM_ARROW}`
+    this.navigationCSSClass = `${CSS_CLASSES.NAVIGATION}`
+    this.secondaryNavigationCSSClass = `${CSS_CLASSES.SECONDARY_NAVIGATION}`
+    this.pagelistCSSClass = `${CSS_CLASSES.PAGE_LIST}`
+    this.pageitemCSSClass = `${CSS_CLASSES.PAGE_ITEM}`
+    this.pageItems = undefined
+    this.pagelistContent = undefined
+    this.nextButton = undefined
+    this.prevButton = undefined
+    this.topButtons = undefined
+    this.bottomButtons = undefined
+    this.pageitem = undefined
+    this.windowWidth = undefined
+    this.newWindowWidth = undefined
   }
   init() {
-    this._markup(this.contents)
-    this._injectContent(this.markup)
+    this._addPageItemId()
+    this._storePageListContent()
+    this._injectContent(this.pagelistContent)
     this._windowWidth()
     this._onResizedWindowWidth()
-    this._makeFirstPageVisible()
-    this._prevSlide()
-    this._nextSlide()
+    this._previousMainPage()
+    this._nextMainPage()
+    // this._previousSubSection()
+    this._nextSubSection()
+    // console.log(this)
   }
-  
-  _markup(contents) {
-    let markup = ''
-    contents.forEach((context, idx) => {
-      markup += `
-        <li class="page-contentItem" data-page-id=${idx+1}>
-          ${context.pageContent}
-        </li>
-      `
-    })
-    this.markup = markup
-  }
-  _transition() {
-    if (this.pages.length < 1) {
-      return
-    } else {
-      return
-    }
-  }
-  _prevSlide(){
+  _previousMainPage(){
     this.prevButton.addEventListener('click', e => {
       e.preventDefault()
-      if(this.currentPageIndex <= 1) {
-        this.currentPageIndex = this.contents.length
+      if(this.currentMainPageIndex <= 1) {
+        this.currentMainPageIndex = this.pageItems.length
       } 
-      else this.currentPageIndex --
-      this._activatePage(this.currentPageIndex)
-      // this._scrollYPage(this.currentPageIndex)
-      this._scrollXPage(this.currentPageIndex)
+      else this.currentMainPageIndex --
+      this._scrollXPage(this.currentMainPageIndex)
     })
   }
-  _nextSlide() {
+  _nextMainPage() {
     this.nextButton.addEventListener('click', e => {
       e.preventDefault()
-      if(this.currentPageIndex === this.contents.length) {
-        this.currentPageIndex = 1
+      if(this.currentMainPageIndex === this.pageItems.length) {
+        this.currentMainPageIndex = 1
       } 
-      else this.currentPageIndex ++
-      this._activatePage(this.currentPageIndex)
-      // this._scrollYPage(this.currentPageIndex)
-      this._scrollXPage(this.currentPageIndex)
+      else this.currentMainPageIndex ++
+      this._scrollXPage(this.currentMainPageIndex)
     })
   }
-  _injectContent(markup) {
+  _nextSubSection(mainPageId) {
+    let NEXT_BUTTON = document.querySelector(`[data-subpage-button-top-${mainPageId}]`)
+
+    if (NEXT_BUTTON === null) {
+      console.log(NEXT_BUTTON)
+      NEXT_BUTTON.addEventListener('click', e => {
+        alert('x')
+        console.log('a')
+      })
+    }
+
+    //- get Page ID
+    
+    //- attach click event to the secondary nav
+    
+    // - use scrollYPage( page ID )
+  }
+  _previousSubSection() {
+    this.topButtons.forEach(button => {
+      button.addEventListener('click', e => {
+        console.log(button)
+      })
+    })
+  }
+  _storePageListContent() {
+    this._hasSecondaryNavigation()
+    this.pagelistContent = document.querySelector('.' + this.pagelistCSSClass).innerHTML
+  }
+  _addPageItemId() {
+    this.pageItems = document.querySelectorAll('.' + this.pageitemCSSClass)
+    this.pageItems.forEach((pageItem, index) => {
+      index ++
+      pageItem.setAttribute('data-page-id', index)
+    })
+  }
+  _injectContent(pagelist) {
     const DEFAULT_MARKUP = `
-      <div class="page">
-        <div class="page-navigation">
-          <span class="page-prev"> Prev </span>
-          <span class="page-next"> Next </span>
+      <div class="${this.heroClass}">
+        <div class="${this.navigationCSSClass}">
+          <span class="${this.previousArrowCSSClass}"> Prev </span>
+          <span class="${this.nextArrowCSSClass}"> Next </span>
         </div>
-        <ul class="page-contentList">
-          ${markup}
-        </ul>
+        <div class="${this.pagelistCSSClass}">
+          ${pagelist}
+        </div>
       </div>
     `
     this.body.innerHTML = DEFAULT_MARKUP
-    this.pageWrapper = document.querySelector('.page-contentList')
-    this.nextButton = document.querySelector('.page-next')
-    this.prevButton = document.querySelector('.page-prev')
+    this.pageitem = document.querySelector('.' + this.pageitemCSSClass)
+    this.pagelist = document.querySelector('.' + this.pagelistCSSClass)
+    this.nextButton = document.querySelector('.' + this.nextArrowCSSClass)
+    this.prevButton = document.querySelector('.' + this.previousArrowCSSClass)
   }
-  _makeFirstPageVisible() {
-    this.contentItems = document.querySelectorAll('.page-contentItem')
-    this.contentItems.forEach ((item,idx) => {
-      if(idx === 0) {
-        item.classList.add(this.activeCSSClass)
-      } else {
-        item.classList.add(this.inactiveCSSClass)
-      }
-    })
+  _scrollYPage(pageId, subpageIndex) {
+    const PAGE_ID = `[data-page-id = "${id}"]`
+    const PAGE_CHILDREN = document.querySelector(`#${PAGE_ID}`).childNodes
+    console.log(PAGE_CHILDREN)
+    // const OFFSET_FROM_TOP = this._elementOffsetTop(DATA_ID) + 'px'
+    // this.pageitem.style.transform = `translateY(-${OFFSET_FROM_TOP})`
   }
-  _activatePage(index) {
-    const CONTENT_ITEMS = this.contentItems
-    CONTENT_ITEMS.forEach( (item, idx) => {
-      if (index === idx + 1 ){
-        item.classList = 'page-contentItem page-contentItem--active'
-      } else {
-        item.classList = 'page-contentItem page-contentItem--inactive'
-      }
-    })
-  }
-  _scrollYPage(id) {
-    const DATA_ID = `[data-page-id = "${id}"]`
-    const OFFSET_FROM_TOP = this._elementOffsetTop(DATA_ID) + 'px'
-    this.pageWrapper.style.transform = `translateY(-${OFFSET_FROM_TOP})`
-  }
-  
   _scrollXPage(id) {
     const OFFSET_FROM_LEFT = this._elementOffsetLeft(id - 1) + 'px'
-    this.pageWrapper.style.transform = `translateX(-${OFFSET_FROM_LEFT})`
+    this.pagelist.style.transform = `translateX(-${OFFSET_FROM_LEFT})`
   }
-  
   _windowWidth() {
     this.windowWidth = this.body.offsetWidth
   }
@@ -126,6 +136,31 @@ export default class PageAnimation {
     })
   }
 
+  _secondaryNavigationMarkup(subpageId) {
+    const SECONDARY_NAVIGATION_MARKUP = `
+      <div class="${this.secondaryNavigationCSSClass}" data-subpage="${subpageId}">
+        <span class="${this.topArrowCSSClass}" data-subpage-button-top-${subpageId}> Top </span>
+        <span class="${this.bottomArrowCSSClass}" data-subpage-button-bottom-${subpageId}> Next Subsection </span>
+      </div>
+    `
+    return SECONDARY_NAVIGATION_MARKUP
+  }
+  _injectSecondaryNavigation(item, subpageId) {
+    const secondaryNav = this._secondaryNavigationMarkup(subpageId)
+    item.insertAdjacentHTML('afterbegin', secondaryNav)
+  }
+  _hasSecondaryNavigation() {
+    this.pageItems.forEach(pageitem => {
+      const pageItemNodes = pageitem.childNodes
+      const pageItemPageId = pageitem.dataset.pageId
+      if(pageItemNodes.length > 1) {
+        this._injectSecondaryNavigation(pageitem, pageItemPageId)
+        this._nextSubSection(pageItemPageId)
+      } else {
+        return
+      }
+    })
+  }
   _elementOffsetLeft(id = 0) {
     const OFFSET_FROM_LEFT = id * this.windowWidth
     return OFFSET_FROM_LEFT

@@ -1,0 +1,86 @@
+%page-default-styling
+  position: relative
+  display: flex
+  height: 100vh
+  width: 100vw
+  justify-content: center
+  align-items: center
+  
+.#{$modulename}
+  height: 100vh
+  overflow: hidden
+  width: 100vw
+  background: black
+  color: grey
+  position: relative
+  &-pagelist
+    @extend %page-default-styling
+    flex-direction: column
+    flex-wrap: wrap
+    transition: .3s transform ease-in-out
+  &-pageitem
+    @extend %page-default-styling
+    flex-direction: row
+    flex-shrink: 0
+    flex-wrap: wrap
+  &-mainpage
+    @extend %page-default-styling
+    flex-direction: column
+  &-subpage
+    @extend %page-default-styling
+    flex-direction: column
+  &-navigation
+    position: absolute
+    top: 50%
+    transform: translateY(-50%)
+    display: flex
+    width: 100%
+    padding-left: 10px
+    padding-right: 10px
+    justify-content: space-between
+    z-index: 1
+  &-prev
+    align-self: flex-start
+    cursor: pointer
+  &-next
+    align-self: flex-end
+    cursor: pointer
+  &-contentList
+    display: flex
+    flex-direction: row
+    transition: .3s transform ease-out
+  &-secondaryNavigation
+    position: absolute
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+    width: 100%
+    height: 100%
+    z-index: 1
+
+  &-top
+    position: absolute
+    top: 10px
+    left: 0
+    right: 0
+    display: flex
+    justify-content: center
+    cursor: pointer
+    
+  &-bottom
+    position: absolute
+    top: auto
+    right: 0
+    bottom: 10px
+    left: 0
+    display: flex
+    justify-content: center
+    cursor: pointer
+    
+// states
+.#{$modulename}
+  &--active
+    opacity: 1
+  &--inactive
+    opacity: 0
