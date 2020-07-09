@@ -90,9 +90,7 @@ export default class PageAnimation {
       } else {
         this.indexes.historySubPage[MAIN_ID - 1].subPageId --
       }
-  
       this._scrollYPage(MAIN_ID_VAL, this.indexes.historySubPage[MAIN_ID - 1].subPageId)
-
     })
   }
   _storePageListContent() {
@@ -112,7 +110,6 @@ export default class PageAnimation {
           mainPageId: parseInt(pageItem.dataset.pageId), 
           subPageId: null,
           totalContents: pageItem.childNodes.length
-          
         })
       }
     })
@@ -150,8 +147,6 @@ export default class PageAnimation {
   _scrollYPage(pageId, subpageIndex) {
     const PAGE_ID = `[data-page-id = "${pageId}"]`
     const currentMaintPage = document.querySelector(PAGE_ID)
-    // const PAGE_CHILDREN = document.querySelector(`#${PAGE_ID}`).childNodes
-    
     const OFFSET_FROM_TOP = this._elementOffsetTop(subpageIndex) + 'px'
     currentMaintPage.style.transform = `translateY(-${OFFSET_FROM_TOP})`
   }
