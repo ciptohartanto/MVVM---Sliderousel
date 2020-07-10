@@ -1,22 +1,24 @@
-import TRANSITIONS from './Const-Transition'
-import {CSS_CLASSES} from './Const-CssClass'
-export default class PageAnimation {
-  constructor () {
+import {CSS_NAMES} from './constants/css-names'
+import {toNextMainPage, toPrevMainPage, toNextSubPage} from './navigators/index'
 
+import Model from './Model'
+
+export default class Sliderousel {
+  constructor () {
     this.indexes= {
       curMainPage: 1,
       historySubPage: undefined
     }
     this.cssClasses = {
-      hero: `${CSS_CLASSES.HERO}`,
-      inactive: `${CSS_CLASSES.INACTIVE}`,
-      active: `${CSS_CLASSES.ACTIVE}`,
-      prevArrow: `${CSS_CLASSES.LEFT_ARROW}`,
-      nextArrow: `${CSS_CLASSES.RIGHT_ARROW}`,
-      topArrow: `${CSS_CLASSES.TOP_ARROW}`,
-      bottomArrow: `${CSS_CLASSES.BOTTOM_ARROW}`,
-      pageList: `${CSS_CLASSES.PAGE_LIST}`,
-      pageItem: `${CSS_CLASSES.PAGE_ITEM}`
+      hero: `${CSS_NAMES.HERO}`,
+      inactive: `${CSS_NAMES.INACTIVE}`,
+      active: `${CSS_NAMES.ACTIVE}`,
+      prevArrow: `${CSS_NAMES.LEFT_ARROW}`,
+      nextArrow: `${CSS_NAMES.RIGHT_ARROW}`,
+      topArrow: `${CSS_NAMES.TOP_ARROW}`,
+      bottomArrow: `${CSS_NAMES.BOTTOM_ARROW}`,
+      pageList: `${CSS_NAMES.PAGE_LIST}`,
+      pageItem: `${CSS_NAMES.PAGE_ITEM}`
     }
     this.dom = {
       body: document.querySelector('body'),
@@ -29,6 +31,11 @@ export default class PageAnimation {
       windowWidth: undefined,
       newWindowWidth: undefined
     }
+    this.functions = {
+      toNextMainPage,
+      toPrevMainPage,
+      toNextSubPage
+    }
   }
   init() {
     this._addPageItemId()
@@ -36,12 +43,30 @@ export default class PageAnimation {
     this._injectContent(this.dom.pagelistContent)
     this._windowWidth()
     this._onResizedWindowWidth()
-    this._previousMainPage()
-    this._nextMainPage()
-    this._previousSubSection()
-    this._nextSubSection()
     this._registerHistoryIndexProps()
-    console.log(this)
+    this.functions.toNextMainPage(
+      this.dom.nextButton, 
+      this.indexes.curMainPage, 
+      this.dom.pageItems.length,
+      this.dom.pagelist,
+      this
+    )
+    this.functions.toPrevMainPage(
+      this.dom.prevButton, 
+      this.indexes.curMainPage, 
+      this.dom.pageItems.length,
+      this.dom.pagelist
+    )
+    this.functions.toNextSubPage(
+      this.dom.bottomButton,
+      this.indexes.curMainPage,
+      this.indexes
+    )
+    // this._previousSubSection()
+    // this._nextSubSection()
+  }
+  set currentPageIndex (newVal) {
+    this.indexes.curMainPage = newVal
   }
   _previousMainPage(){
     this.dom.prevButton.addEventListener('click', e => {

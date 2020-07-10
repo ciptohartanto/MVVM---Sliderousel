@@ -1,9 +1,6 @@
-import PageAnimation from './PageAnimation'
-import TRANSITIONS from './Const-Transition'
+import Sliderousel from './module/sliderousel'
 
 document.addEventListener('DOMContentLoaded', e => {
-  const myPage = new PageAnimation({
-    transition: TRANSITIONS.FADE_IN_FADE_OUT
-  })
+  const myPage = new Sliderousel()
   myPage.init()
 })

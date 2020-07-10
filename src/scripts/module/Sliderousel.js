@@ -1,47 +1,17 @@
-import TRANSITIONS from './Const-Transition'
-import {CSS_CLASSES} from './Const-CssClass'
-export default class PageAnimation {
-  constructor () {
+import {CSS_NAMES} from './constants/css-names'
+import {toNextMainPage, toPrevMainPage, toNextSubPage} from './navigators/index'
 
-    this.indexes= {
-      curMainPage: 1,
-      historySubPage: undefined
-    }
-    this.cssClasses = {
-      hero: `${CSS_CLASSES.HERO}`,
-      inactive: `${CSS_CLASSES.INACTIVE}`,
-      active: `${CSS_CLASSES.ACTIVE}`,
-      prevArrow: `${CSS_CLASSES.LEFT_ARROW}`,
-      nextArrow: `${CSS_CLASSES.RIGHT_ARROW}`,
-      topArrow: `${CSS_CLASSES.TOP_ARROW}`,
-      bottomArrow: `${CSS_CLASSES.BOTTOM_ARROW}`,
-      pageList: `${CSS_CLASSES.PAGE_LIST}`,
-      pageItem: `${CSS_CLASSES.PAGE_ITEM}`
-    }
-    this.dom = {
-      body: document.querySelector('body'),
-      pageItems: undefined,
-      pageListContent: undefined,
-      nextButton: undefined,
-      prevButton: undefined,
-      topButton: undefined,
-      bottomButton: undefined,
-      windowWidth: undefined,
-      newWindowWidth: undefined
-    }
+import ViewModel from './ViewModel'
+
+export default class Sliderousel {
+  constructor () {
+    this.vm = new ViewModel()
   }
   init() {
-    this._addPageItemId()
-    this._storePageListContent()
-    this._injectContent(this.dom.pagelistContent)
-    this._windowWidth()
-    this._onResizedWindowWidth()
-    this._previousMainPage()
-    this._nextMainPage()
-    this._previousSubSection()
-    this._nextSubSection()
-    this._registerHistoryIndexProps()
-    console.log(this)
+    this.vm.init()
+  }
+  set currentPageIndex (newVal) {
+    this.indexes.curMainPage = newVal
   }
   _previousMainPage(){
     this.dom.prevButton.addEventListener('click', e => {
