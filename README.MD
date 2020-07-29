@@ -36,7 +36,7 @@ To generate `dist/`
 npm run dist
 ```
 
-if you use [Verda service](http://verda-dev.linecorp.com/), please modify:
+if you use Verda or custom web hosting, please modify:
 ```bash
 //-package.json
 
