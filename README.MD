@@ -16,7 +16,7 @@
 ### Step 1 - Clone
 
 ```bash
-git clone https://git.linecorp.com/cipto-hartanto/gulp4_markup_boilerplate.git
+git clone https://github.com/ciptohartanto/MVVM---Sliderousel.git
 ```
 
 ### Step 2 -Installation
